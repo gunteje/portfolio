@@ -308,9 +308,9 @@ const ALL_PROJECTS: Project[] = [
 ];
 
 const SKILLS = [
-  { category: "Application", list: ["C#", "C++", "WPF", "WinForm", "WCF", "Xamarin", "WPF MVVM", "WinSock"] },
-  { category: "Web & Server", list: ["ASP.NET", "ASP.NET Core", "Java Spring", "JSP", "eGovFrame", "PHP", "Web API"] },
-  { category: "Database & ETC", list: ["MSSQL", "Oracle", "PostgreSQL", "SQLite", "IOCP", "Tibco"] }
+  { category: "Application", list: ["C#", "C++", "WPF", "WinForm", "WCF", "Xamarin", "WPF MVVM", "WinSock", "IOCP"] },
+  { category: "Web & Server", list: ["ASP.NET", "ASP.NET Core", "Java Spring", "JSP", "eGovFrame", "PHP", "CodeIgniter"] },
+  { category: "Database & ETC", list: ["MSSQL", "Oracle", "PostgreSQL", "SQLite", "Tibco"] }
 ];
 
 const MILESTONES = [
@@ -383,7 +383,10 @@ function App() {
       {/* Navbar */}
       <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
         <div className="container navbar-content">
-          <a href="#" className="logo gradient-text">GUNTEJE</a>
+          <a href="#" className="logo gradient-text">
+            <img src="logo.svg" alt="GT" style={{ width: '24px', height: '24px', marginRight: '8px', verticalAlign: 'middle' }} />
+            ANDERSON
+          </a>
           <div className="nav-links">
             <a href="#about">About</a>
             <a href="#milestones">Career</a>
@@ -484,6 +487,8 @@ function App() {
             ))}
           </div>
 
+
+
           <div className="projects-grid">
             {filteredProjects.map(p => (
               <div key={p.id} className="project-card">
@@ -507,6 +512,13 @@ function App() {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Subtle Role Legend Footer */}
+          <div style={{ marginTop: '4rem', paddingTop: '2rem', borderTop: '1px solid var(--glass-border)', textAlign: 'center' }}>
+            <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', opacity: 0.7, marginBottom: '1.5rem' }}>
+              * 프로젝트 역할: PM(관리), PL(리더), AD(설계), PG(개발), SP(시스템), SM(유지보수), OP(운영), DBA(DB)
+            </p>
           </div>
         </div>
       </section>
@@ -569,15 +581,29 @@ function App() {
               </div>
               <div>
                 <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>이메일</label>
-                <input name="email" type="email" placeholder="답변받으실 이메일을 입력하세요" required style={{ width: '100%', padding: '1rem', borderRadius: '12px', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', color: 'white', outline: 'none' }} />
+                <input
+                  name="email"
+                  type="email"
+                  placeholder="name@example.com"
+                  required
+                  style={{ width: '100%', padding: '1rem', borderRadius: '12px', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', color: 'white', outline: 'none' }}
+                />
               </div>
               <div>
                 <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>연락처</label>
-                <input name="phone" type="text" placeholder="연락받으실 번호를 입력해주세요" required style={{ width: '100%', padding: '1rem', borderRadius: '12px', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', color: 'white', outline: 'none' }} />
+                <input
+                  name="phone"
+                  type="tel"
+                  placeholder="010-0000-0000"
+                  pattern="[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}"
+                  title="010-0000-0000 형식으로 입력해주세요"
+                  required
+                  style={{ width: '100%', padding: '1rem', borderRadius: '12px', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', color: 'white', outline: 'none' }}
+                />
               </div>
               <div>
                 <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>문의 내용</label>
-                <textarea name="message" rows={5} placeholder="문의하실 내용을 입력해주세요" required style={{ width: '100%', padding: '1rem', borderRadius: '12px', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', color: 'white', outline: 'none', resize: 'none' }}></textarea>
+                <textarea name="message" rows={5} placeholder="문의하실 내용을 정확히 입력해주세요" required style={{ width: '100%', padding: '1rem', borderRadius: '12px', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', color: 'white', outline: 'none', resize: 'none' }}></textarea>
               </div>
               <button type="submit" className="btn-primary" style={{ width: '100%', border: 'none', cursor: 'pointer', marginTop: '1rem', fontSize: '1rem', fontWeight: '700' }}>
                 메시지 보내기
@@ -589,7 +615,7 @@ function App() {
 
       <footer className="footer">
         <div className="container">
-          <p>© {new Date().getFullYear()} Gunteje Portfolio. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Anderson Portfolio. All rights reserved.</p>
         </div>
       </footer>
     </div>
