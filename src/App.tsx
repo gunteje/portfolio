@@ -28,6 +28,7 @@ const LockIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
 );
 
+
 // --- Full Data ---
 const ALL_PROJECTS: Project[] = [
   {
@@ -308,10 +309,12 @@ const ALL_PROJECTS: Project[] = [
 ];
 
 const SKILLS = [
-  { category: "Application", list: ["C#", "C++", "WPF", "WinForm", "WCF", "Xamarin", "WPF MVVM", "WinSock", "IOCP"] },
-  { category: "Web & Server", list: ["ASP.NET", "ASP.NET Core", "Java Spring", "JSP", "eGovFrame", "PHP", "CodeIgniter"] },
+  { category: "Application", list: ["C#", "C++", "WPF", "WinForm", "WCF", "Xamarin", "IOCP"] },
+  { category: "Web & Server", list: ["ASP.NET", "ASP.NET Core", "Spring", "JSP", "eGovFrame", "PHP", "CodeIgniter"] },
   { category: "Database & ETC", list: ["MSSQL", "Oracle", "PostgreSQL", "SQLite", "Tibco"] }
 ];
+
+
 
 const MILESTONES = [
   {
@@ -403,33 +406,43 @@ function App() {
           <div className="blob blob-1"></div>
           <div className="blob blob-2"></div>
         </div>
-        <div className="container">
-          <h2>Trustworthy & Sincere</h2>
-          <h1><span className="gradient-text">기본을 지키는<br />19년차 개발자</span></h1>
-          <p>
-            2006년부터 묵묵히 제 자리를 지키며, 윈도우 애플리케이션부터 웹 서비스까지
-            비즈니스의 핵심을 정확하게 구현해 왔습니다. 화려함보다 단단한 신뢰를 지향합니다.
+        <div className="container" style={{ textAlign: 'left', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+          <h2 style={{ fontSize: '1rem', color: 'var(--text-secondary)', fontWeight: 500, letterSpacing: '0.2em', marginBottom: '1.5rem' }}>SENIOR SOFTWARE ENGINEER</h2>
+          <h1 style={{ textAlign: 'left', maxWidth: '850px', marginBottom: '1.5rem' }}>
+            기술은 비즈니스를 돕는 도구이지만,<br />
+            <span className="gradient-text">그것을 완성하는 것은 사람의 정성입니다.</span>
+          </h1>
+          <p style={{ fontSize: '1.1rem', color: 'var(--text-secondary)', maxWidth: '650px', lineHeight: '1.8', marginBottom: '3rem' }}>
+            화려한 코드를 넘어, 비즈니스의 성공을 진심으로 고민하는 정성으로 보답합니다.
           </p>
-          <a href="#projects" className="btn-primary">프로젝트 이력 보기</a>
+
+          <div className="summary-bar" style={{ display: 'flex', flexWrap: 'wrap', gap: '3rem', padding: '2.5rem', border: '1px solid var(--glass-border)', borderRadius: '12px', background: 'var(--bg-secondary)', width: '100%', maxWidth: '900px' }}>
+            <div className="summary-item">
+              <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>EXPERIENCE</div>
+              <div style={{ fontSize: '1.8rem', fontWeight: 700 }}>19+ Years</div>
+            </div>
+            <div className="summary-item">
+              <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>PROJECTS</div>
+              <div style={{ fontSize: '1.8rem', fontWeight: 700 }}>30+ Successfully Done</div>
+            </div>
+            <div className="summary-item">
+              <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>CLIENTS</div>
+              <div style={{ fontSize: '1.8rem', fontWeight: 700 }}>Samsung , SK , KT,GS, CJ, Lotte</div>
+            </div>
+          </div>
+
+          <div style={{ marginTop: '3.5rem' }}>
+            <a href="#projects" className="btn-primary" style={{ marginRight: '1rem' }}>프로젝트 이력</a>
+            <a href="#contact" className="btn-secondary" style={{ padding: '1rem 2.4rem', borderRadius: '4px', border: '1px solid var(--glass-border)', fontSize: '0.9rem', fontWeight: 600 }}>문의하기</a>
+          </div>
         </div>
       </section>
 
-      {/* About Section */}
-      <section id="about" className="section">
-        <div className="container" style={{ maxWidth: '800px', textAlign: 'center' }}>
-          <h2 className="section-title">소중한 인연과 가치</h2>
-          <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)' }}>
-            "기술은 비즈니스를 돕는 도구이지만, 그것을 만드는 것은 사람의 정성입니다."<br /><br />
-            수많은 대기업과 공공기관의 신뢰를 바탕으로, 단순한 개발을 넘어
-            지속 가능한 시스템을 만들기 위해 오늘도 성실하게 나아갑니다.
-          </p>
-        </div>
-      </section>
 
       {/* Milestones (Timeline) */}
       <section id="milestones" className="section" style={{ background: 'var(--bg-secondary)' }}>
         <div className="container">
-          <h2 className="section-title">성실함이 쌓여온 시간</h2>
+          <h2 className="section-title">히스토리</h2>
           <div className="timeline">
             {MILESTONES.map((m, i) => (
               <div key={i} className="timeline-item">
@@ -473,7 +486,7 @@ function App() {
       {/* Projects Section */}
       <section id="projects" className="section" style={{ background: 'var(--bg-secondary)' }}>
         <div className="container">
-          <h2 className="section-title">현장의 결과물들</h2>
+          <h2 className="section-title">프로젝트 이력</h2>
 
           <div className="filter-tabs">
             {(['All', 'C#', 'Web', 'DB', 'C++'] as const).map(t => (
@@ -487,7 +500,12 @@ function App() {
             ))}
           </div>
 
-
+          {/* Subtle Role Legend Header */}
+          <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
+            <p style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', opacity: 0.6 }}>
+              * PM(관리) PL(리더) AD(설계) PG(개발) SP(시스템) SM(유지보수) OP(운영) DBA(DB)
+            </p>
+          </div>
 
           <div className="projects-grid">
             {filteredProjects.map(p => (
@@ -506,7 +524,7 @@ function App() {
                 <div className="project-footer">
                   <div className="project-tags">
                     {p.tech.map((t, i) => (
-                      <span key={i} className="project-tag">#{t}</span>
+                      <span key={i} className="project-tag">{t}</span>
                     ))}
                   </div>
                 </div>
@@ -514,12 +532,19 @@ function App() {
             ))}
           </div>
 
-          {/* Subtle Role Legend Footer */}
-          <div style={{ marginTop: '4rem', paddingTop: '2rem', borderTop: '1px solid var(--glass-border)', textAlign: 'center' }}>
-            <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', opacity: 0.7, marginBottom: '1.5rem' }}>
-              * 프로젝트 역할: PM(관리), PL(리더), AD(설계), PG(개발), SP(시스템), SM(유지보수), OP(운영), DBA(DB)
-            </p>
-          </div>
+        </div>
+      </section>
+
+
+      {/* About Section (Philosophy) */}
+      <section id="about" className="section">
+        <div className="container" style={{ maxWidth: '800px', textAlign: 'center' }}>
+          <h2 className="section-title">소중한 인연과 가치</h2>
+          <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)' }}>
+            "기술은 비즈니스를 돕는 도구이지만, 그것을 만드는 것은 사람의 정성입니다."<br /><br />
+            수많은 대기업과 공공기관의 신뢰를 바탕으로, 단순한 개발을 넘어
+            지속 가능한 시스템을 만들기 위해 오늘도 성실하게 나아갑니다.
+          </p>
         </div>
       </section>
 
