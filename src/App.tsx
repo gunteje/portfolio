@@ -372,6 +372,47 @@ const MILESTONES = [
 function App() {
   const [scrolled, setScrolled] = useState(false);
   const [filter, setFilter] = useState<'All' | 'C#' | 'Web' | 'DB' | 'C++'>('All');
+  const [phone, setPhone] = useState("");
+  const [inquiryType, setInquiryType] = useState("general");
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  const validateField = (name: string, value: string) => {
+    let error = "";
+    if (name === "email") {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!value.trim()) error = "이메일을 입력해주세요.";
+      else if (!emailRegex.test(value)) error = "올바른 이메일 형식이 아닙니다.";
+    } else if (name === "phone") {
+      const phoneRegex = /^010-\d{3,4}-\d{4}$/;
+      if (!value.trim()) error = "연락처를 입력해주세요.";
+      else if (!phoneRegex.test(value)) error = "연락처 형식이 올바르지 않습니다 (010-0000-0000).";
+    } else if (name === "from_name") {
+      if (!value.trim()) error = "성함을 입력해주세요.";
+    } else if (name === "message") {
+      if (!value.trim()) error = "문의 내용을 입력해주세요.";
+      else if (value.trim().length < 20) error = "문의 내용은 최소 20자 이상 입력해주세요.";
+    }
+    setErrors(prev => ({ ...prev, [name]: error }));
+    return error === "";
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target.value.replace(/[^0-9]/g, "");
+    let formatted = "";
+
+    if (input.length <= 3) {
+      formatted = input;
+    } else if (input.length <= 7) {
+      formatted = `${input.slice(0, 3)}-${input.slice(3)}`;
+    } else if (input.length <= 11) {
+      formatted = `${input.slice(0, 3)}-${input.slice(3, 7)}-${input.slice(7)}`;
+    } else {
+      formatted = `${input.slice(0, 3)}-${input.slice(3, 7)}-${input.slice(7, 11)}`;
+    }
+
+    setPhone(formatted);
+    if (errors.phone) validateField("phone", formatted);
+  };
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -427,7 +468,7 @@ function App() {
             </div>
             <div className="summary-item">
               <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>CLIENTS</div>
-              <div style={{ fontSize: '1.8rem', fontWeight: 700 }}>Samsung , SK , KT,GS, CJ, Lotte</div>
+              <div style={{ fontSize: '1.8rem', fontWeight: 700 }}>Samsung , SK , KT, GS, CJ, Lotte</div>
             </div>
           </div>
 
@@ -557,8 +598,23 @@ function App() {
             아래 내용을 남겨주시면 정성껏 답변 드리겠습니다.
           </p>
 
-          <form className="contact-form" onSubmit={(e) => {
+          <form className="contact-form" noValidate onSubmit={(e) => {
             e.preventDefault();
+
+            const formData = new FormData(e.currentTarget);
+            const nameValue = formData.get('from_name') as string;
+            const emailValue = formData.get('email') as string;
+            const phoneValue = formData.get('phone') as string;
+            const messageValue = formData.get('message') as string;
+
+            const isNameValid = validateField("from_name", nameValue);
+            const isEmailValid = validateField("email", emailValue);
+            const isPhoneValid = validateField("phone", phoneValue);
+            const isMessageValid = validateField("message", messageValue);
+
+            if (!isNameValid || !isEmailValid || !isPhoneValid || !isMessageValid) {
+              return;
+            }
 
             // --- 연동 및 보안 정보 ---
             const SERVICE_ID = "service_r5yaf9g";
@@ -567,7 +623,6 @@ function App() {
             // ------------------
 
             // Spam Honeypot Check
-            const formData = new FormData(e.currentTarget);
             if (formData.get('bot_field')) {
               console.log("Spam detected");
               return;
@@ -586,6 +641,8 @@ function App() {
                   btn.innerText = "전송 완료!";
                   btn.style.background = "#10b981";
                 }
+                setPhone("");
+                setErrors({});
                 (e.target as HTMLFormElement).reset();
               }, (err) => {
                 alert("전송에 실패했습니다. 이메일(airnbsong@gmail.com)로 직접 연락 부탁드립니다.");
@@ -601,34 +658,76 @@ function App() {
 
             <div style={{ display: 'grid', gap: '1.5rem', textAlign: 'left' }}>
               <div>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>문의 유형</label>
+                <select
+                  name="inquiry_type"
+                  value={inquiryType}
+                  onChange={(e) => setInquiryType(e.target.value)}
+                  style={{ width: '100%', padding: '1rem', borderRadius: '12px', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', color: 'white', outline: 'none', cursor: 'pointer', appearance: 'none' }}
+                >
+                  <option value="general" style={{ background: '#1a1d23' }}>프로젝트 문의</option>
+                  <option value="solution" style={{ background: '#1a1d23' }}>솔루션 구매 문의</option>
+                  <option value="education" style={{ background: '#1a1d23' }}>1:1 개인 교육/멘토링</option>
+                </select>
+              </div>
+
+              {inquiryType === 'education' && (
+                <div style={{ padding: '1.5rem', borderRadius: '12px', background: 'rgba(56, 189, 248, 0.05)', border: '1px dashed rgba(56, 189, 248, 0.3)', marginBottom: '0.5rem' }}>
+                  <h4 style={{ fontSize: '0.9rem', color: '#38bdf8', marginBottom: '0.8rem', fontWeight: 600 }}>🎓 개인 교육 안내</h4>
+                  <ul style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', paddingLeft: '1.2rem', lineHeight: '1.7' }}>
+                    <li>1:1 맞춤형 실무 멘토링 (C#, WPF, 아키텍처 등)</li>
+                    <li>기본 교육: 시간당 7~15만원 (협의 가능)</li>
+                    <li>커리큘럼: 상담 후 개인의 레벨과 목표에 맞춰 구성</li>
+                  </ul>
+                </div>
+              )}
+
+              <div>
                 <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>성함</label>
-                <input name="from_name" type="text" placeholder="성함을 입력해주세요" required style={{ width: '100%', padding: '1rem', borderRadius: '12px', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', color: 'white', outline: 'none' }} />
+                <input
+                  name="from_name"
+                  type="text"
+                  placeholder="성함을 입력해주세요"
+                  onBlur={(e) => validateField("from_name", e.target.value)}
+                  style={{ width: '100%', padding: '1rem', borderRadius: '12px', background: 'var(--glass-bg)', border: errors.from_name ? '1px solid #ef4444' : '1px solid var(--glass-border)', color: 'white', outline: 'none' }}
+                />
+                {errors.from_name && <p style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '0.5rem', marginLeft: '0.5rem' }}>{errors.from_name}</p>}
               </div>
               <div>
                 <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>이메일</label>
                 <input
                   name="email"
                   type="email"
-                  placeholder="name@example.com"
-                  required
-                  style={{ width: '100%', padding: '1rem', borderRadius: '12px', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', color: 'white', outline: 'none' }}
+                  placeholder="이메일을 입력해 주세요."
+                  onBlur={(e) => validateField("email", e.target.value)}
+                  style={{ width: '100%', padding: '1rem', borderRadius: '12px', background: 'var(--glass-bg)', border: errors.email ? '1px solid #ef4444' : '1px solid var(--glass-border)', color: 'white', outline: 'none' }}
                 />
+                {errors.email && <p style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '0.5rem', marginLeft: '0.5rem' }}>{errors.email}</p>}
               </div>
               <div>
                 <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>연락처</label>
                 <input
                   name="phone"
                   type="tel"
+                  value={phone}
+                  onChange={handlePhoneChange}
+                  onBlur={(e) => validateField("phone", e.target.value)}
                   placeholder="010-0000-0000"
-                  pattern="[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}"
-                  title="010-0000-0000 형식으로 입력해주세요"
-                  required
-                  style={{ width: '100%', padding: '1rem', borderRadius: '12px', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', color: 'white', outline: 'none' }}
+                  maxLength={13}
+                  style={{ width: '100%', padding: '1rem', borderRadius: '12px', background: 'var(--glass-bg)', border: errors.phone ? '1px solid #ef4444' : '1px solid var(--glass-border)', color: 'white', outline: 'none' }}
                 />
+                {errors.phone && <p style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '0.5rem', marginLeft: '0.5rem' }}>{errors.phone}</p>}
               </div>
               <div>
                 <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>문의 내용</label>
-                <textarea name="message" rows={5} placeholder="문의하실 내용을 정확히 입력해주세요" required style={{ width: '100%', padding: '1rem', borderRadius: '12px', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', color: 'white', outline: 'none', resize: 'none' }}></textarea>
+                <textarea
+                  name="message"
+                  rows={5}
+                  placeholder="문의하실 내용을 정확히 입력해주세요"
+                  onBlur={(e) => validateField("message", e.target.value)}
+                  style={{ width: '100%', padding: '1rem', borderRadius: '12px', background: 'var(--glass-bg)', border: errors.message ? '1px solid #ef4444' : '1px solid var(--glass-border)', color: 'white', outline: 'none', resize: 'none' }}
+                ></textarea>
+                {errors.message && <p style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '0.5rem', marginLeft: '0.5rem' }}>{errors.message}</p>}
               </div>
               <button type="submit" className="btn-primary" style={{ width: '100%', border: 'none', cursor: 'pointer', marginTop: '1rem', fontSize: '1rem', fontWeight: '700' }}>
                 메시지 보내기
