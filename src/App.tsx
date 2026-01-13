@@ -7,10 +7,33 @@ import SolutionList from './pages/SolutionList';
 import SolutionDetail from './pages/SolutionDetail';
 
 function ScrollToTop() {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
+
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
+    if (!hash) {
+      window.scrollTo(0, 0);
+    } else {
+      // Increase delay to account for framer-motion exit (0.4s) + entry
+      const timer = setTimeout(() => {
+        const id = hash.replace('#', '');
+        const element = document.getElementById(id);
+
+        if (element) {
+          const headerOffset = 80;
+          const elementPosition = element.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth"
+          });
+        }
+      }, 500); // Increased to 500ms to cover 0.4s animation
+
+      return () => clearTimeout(timer);
+    }
+  }, [pathname, hash]);
+
   return null;
 }
 
@@ -38,12 +61,12 @@ function App() {
             ANDERSON
           </Link>
           <div className="nav-links">
-            <a href={getLink("#about")}>About</a>
-            <a href={getLink("#milestones")}>Career</a>
-            <a href={getLink("#skills")}>Skills</a>
+            <Link to={getLink("#about")}>About</Link>
+            <Link to={getLink("#milestones")}>Career</Link>
+            <Link to={getLink("#skills")}>Skills</Link>
             <Link to="/products" className={location.pathname.startsWith('/products') ? 'active' : ''}>Products</Link>
-            <a href={getLink("#projects")}>Work</a>
-            <a href={getLink("#contact")}>Contact</a>
+            <Link to={getLink("#projects")}>Work</Link>
+            <Link to={getLink("#contact")}>Contact</Link>
           </div>
         </div>
       </nav>
